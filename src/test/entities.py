@@ -1,24 +1,32 @@
 import pygame
 import os
+import math
 
-
-class Ball:
-    def __init__(self, x, y, speed):
-        self.x = x
-        self.y = y
+class Character(pygame.sprite.Sprite):
+    def __init__(self, x, y, speed, img):
+        pygame.sprite.Sprite.__init__(self)
         self.speed = speed
-        self.image = pygame.image.load(os.path.join('res','ball.png'))
-        self.rect = self.get_area()
-
-    def get_area(self):
-        return self.image.get_rect()
+        self.jump_speed = 0
+        self.is_jumping = False
+        self.image, self.rect = img
 
     def move(self, x, y):
         self.rect = self.rect.move(x, y)
 
+    def jump(self):
+        if math.floor(self.jump_speed) != 0:
+            self.is_jumping = True
+
+        if self.is_jumping:
+            self.jump_speed = -10
+            self.is_jumping = True
+
     def draw(self, screen, color):
         pygame.draw.rect(screen, color, self.rect, 0)
 
+    def update(self):
+        self.jump_speed += 0.4
+        self.move(0, self.jump_speed)
 
 class Wall:
     def __init__(self, x, y, width, height):
