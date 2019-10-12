@@ -8,6 +8,6 @@ from managers import Control
 pygame.init()
 # pylint: enable=no-member
 
-main = Control(800,800)
+main = Control(900,600)
 
 main.main_loop()

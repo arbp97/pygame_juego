@@ -9,23 +9,22 @@ class Character(pygame.sprite.Sprite):
         self.jump_speed = 0
         self.is_jumping = False
         self.image, self.rect = img
+        self.rect.x = x
+        self.rect.y = y
 
     def move(self, x, y):
         self.rect = self.rect.move(x, y)
 
     def jump(self):
-        if math.floor(self.jump_speed) != 0:
+        if self.jump_speed >= 0 and not self.is_jumping:
             self.is_jumping = True
-
-        if self.is_jumping:
-            self.jump_speed = -10
-            self.is_jumping = True
+            self.jump_speed = -12
 
     def draw(self, screen, color):
         pygame.draw.rect(screen, color, self.rect, 0)
 
     def update(self):
-        self.jump_speed += 0.4
+        self.jump_speed += 0.8
         self.move(0, self.jump_speed)
 
 class Wall:
@@ -33,4 +32,5 @@ class Wall:
         self.rect = pygame.Rect(x, y, width, height)
 
     def draw(self,screen,color):
-        pygame.draw.rect(screen, color, self.rect, 0)
+        pygame.draw.rect(screen, color, self.rect, 1)
+

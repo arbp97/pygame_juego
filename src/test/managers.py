@@ -8,11 +8,11 @@ class Control:
     def __init__(self,screen_width,screen_height):
         self.display = pygame.display.set_mode((screen_width,screen_height))
         self.fpsClock = pygame.time.Clock()
-        self.char = Character(0,700, 5, self.load_image("knight.png",-1))
-        self.wall_list = [Wall(0,750,screen_width,50)]
+        self.char = Character(0,510, 6, self.load_image("adventurer/adventurer-idle-00.png",-1))
+        self.wall_list = [Wall(0,500,screen_width,100)]
         self.background = pygame.Surface(self.display.get_size())
+        self.background = pygame.image.load("res/background.png")
         self.background = self.background.convert()
-        self.background.fill((250, 250, 250))
         self.sprites = pygame.sprite.RenderPlain(self.char)
 
     def check_events(self):
@@ -34,12 +34,12 @@ class Control:
 
         if(keys[pygame.K_SPACE]):
             self.char.jump()
+            self.check_collisions(0,self.char.jump_speed)
         # pylint: enable=no-member
 
     def check_collisions(self,x,y):
 
         for wall in self.wall_list:
-
             if self.char.rect.colliderect(wall.rect):
                 if x != 0:
                     if x > 0:
@@ -61,7 +61,7 @@ class Control:
             image = pygame.image.load(fullname)
         except pygame.error:
             print("Cannot load image:", fullname)
-            raise SystemExit(str(geterror()))
+            raise SystemExit()
         image = image.convert()
         if colorkey is not None:
             if colorkey == -1:
@@ -73,20 +73,20 @@ class Control:
 
         while 1:
 
-            self.fpsClock.tick(60)
+            self.fpsClock.tick(30)
 
             self.check_events()
 
             self.char.update()
             self.check_collisions(0,self.char.jump_speed)
+
             #self.display.fill((0,0,0))
             self.display.blit(self.background, (0, 0))
 
             self.sprites.draw(self.display)
+            #self.display.blit(self.char.image,(self.char.rect.x,self.char.rect.y))
 
             for wall in self.wall_list:
                 wall.draw(self.display,(100,100,100))
 
             pygame.display.update()
-
-            pygame.display.flip()
