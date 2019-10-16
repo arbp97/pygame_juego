@@ -2,14 +2,16 @@ import pygame
 import os
 import sys
 # pylint: disable=no-name-in-module
-from entities import Character,Wall
+from entities import Character, Wall
+
 
 class Control:
-    def __init__(self,screen_width,screen_height):
-        self.display = pygame.display.set_mode((screen_width,screen_height))
+    def __init__(self, screen_width, screen_height):
+        self.display = pygame.display.set_mode((screen_width, screen_height))
         self.fpsClock = pygame.time.Clock()
-        self.char = Character(0,510, 6, self.load_image("adventurer/adventurer-idle-00.png",-1))
-        self.wall_list = [Wall(0,500,screen_width,100)]
+        self.char = Character(0, 510, 6, self.load_image(
+            "adventurer/adventurer-idle-00.png", -1))
+        self.wall_list = [Wall(0, 500, screen_width, 100)]
         self.background = pygame.Surface(self.display.get_size())
         self.background = pygame.image.load("res/background.png")
         self.background = self.background.convert()
@@ -25,19 +27,34 @@ class Control:
         keys = pygame.key.get_pressed()
 
         if(keys[pygame.K_LEFT]):
-            self.char.move(-self.char.speed,0)
-            self.check_collisions(-self.char.speed,0)
+            self.char.going_right = False
+            self.char.going_left = True
+            self.char.view = False
+            self.char.move(-self.char.speed, 0)
+            self.check_collisions(-self.char.speed, 0)
+            self.char.walk_count += 0.5
 
-        if(keys[pygame.K_RIGHT]):
-            self.char.move(self.char.speed,0)
-            self.check_collisions(self.char.speed,0)
+        elif(keys[pygame.K_RIGHT]):
+            self.char.going_left = False
+            self.char.going_right = True
+            self.char.view = True
+            self.char.move(self.char.speed, 0)
+            self.check_collisions(self.char.speed, 0)
+            self.char.walk_count += 0.5
+
+        else:
+            self.char.going_right = False
+            self.char.going_left = False
+            self.char.idle_count += 0.5
 
         if(keys[pygame.K_SPACE]):
             self.char.jump()
-            self.check_collisions(0,self.char.jump_speed)
+            self.check_collisions(0, self.char.jump_speed)
+            self.char.walk_count = 0
+            self.char.jump_count += 0.5
         # pylint: enable=no-member
 
-    def check_collisions(self,x,y):
+    def check_collisions(self, x, y):
 
         for wall in self.wall_list:
             if self.char.rect.colliderect(wall.rect):
@@ -55,7 +72,7 @@ class Control:
                     else:
                         self.char.rect.top = wall.rect.bottom
 
-    def load_image(self,name, colorkey=None):
+    def load_image(self, name, colorkey=None):
         fullname = os.path.join("res", name)
         try:
             image = pygame.image.load(fullname)
@@ -78,15 +95,15 @@ class Control:
             self.check_events()
 
             self.char.update()
-            self.check_collisions(0,self.char.jump_speed)
+            self.check_collisions(0, self.char.jump_speed)
 
-            #self.display.fill((0,0,0))
+            # self.display.fill((0,0,0))
             self.display.blit(self.background, (0, 0))
 
             self.sprites.draw(self.display)
-            #self.display.blit(self.char.image,(self.char.rect.x,self.char.rect.y))
+            # self.display.blit(self.char.image,(self.char.rect.x,self.char.rect.y))
 
             for wall in self.wall_list:
-                wall.draw(self.display,(100,100,100))
+                wall.draw(self.display, (100, 100, 100))
 
             pygame.display.update()
