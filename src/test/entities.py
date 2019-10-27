@@ -90,7 +90,15 @@ class Character(pygame.sprite.Sprite):
                 self.image = char_idle_right[round(self.idle_count)]
             else:
                 self.image = char_idle_left[round(self.idle_count)]
+        #print(self.rect.x,self.rect.y)
+        if self.rect.x > 900:
+            self.update_position(-10,510)
+        elif self.rect.x < -12:
+            self.update_position(898,510)
 
+    def update_position(self,x,y):
+        self.rect.x = x
+        self.rect.y = y
 
 
 
@@ -101,3 +109,6 @@ class Wall:
     def draw(self,screen,color):
         pygame.draw.rect(screen, color, self.rect, 1)
 
+class projectile:
+    def __init__(self):
+        self.x = 2 #TODO

@@ -11,7 +11,7 @@ class Control:
         self.fpsClock = pygame.time.Clock()
         self.char = Character(0, 510, 6, self.load_image(
             "adventurer/adventurer-idle-00.png", -1))
-        self.wall_list = [Wall(0, 500, screen_width, 100)]
+        self.wall_list = [Wall(0, 500, screen_width+300, 100)]
         self.background = pygame.Surface(self.display.get_size())
         self.background = pygame.image.load("res/background.png")
         self.background = self.background.convert()
